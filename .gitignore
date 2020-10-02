@@ -1,0 +1,15 @@
+
+*.json
+*.h5
+*.hdf5
+.DS_Store
+nodes
+nodes1
+nodes2
+checkpoint
+
+data/
+images/
+images-dist*/
+
+__pycache__
