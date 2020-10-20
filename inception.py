@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # obtained from https://github.com/mseitzer/pytorch-fid
 
 import torch.nn as nn

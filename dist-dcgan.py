@@ -158,7 +158,7 @@ def average_models(model, group=None, choose_r0=True, weights=None):
 
     for param in model.parameters():
         if rank == 0 and not choose_r0:				#If rank=0 is not in included in this round, put zeros instead
-            param.data = torch.zeros(param.size()).cuda()
+            param.data = torch.zeros(param.size()).cuda() if cuda else torch.zeros(param.size())
         if not opt.weight_avg or weights is None:
             dist.reduce(param.data, dst=0, op=dist.ReduceOp.SUM, group=group)
             param.data /= (gp_size if choose_r0 else gp_size - 1)
@@ -247,7 +247,7 @@ def init_groups(size, cls_freq_wrk):
                 choose_r0 = False
             choose_r.append(choose_r0)
         g.append(0)
-        assert len(g) > 1
+        assert len(g) > 1, "Number of sampled nodes per FL round is too low; consider increasing the number of nodes in the deployment or the fraction of chosen ndoes per round"
         if cuda:
             g = torch.cuda.FloatTensor(g)
         else:
@@ -432,7 +432,7 @@ def run(rank, size):
             if rank == 0 and not choose_r0:
                 g_p = generator.parameters()
                 for param in generator.parameters():
-                    param.grad.data = torch.zeros(param.size()).cuda()
+                    param.grad.data = torch.zeros(param.size()).cuda() if cuda else torch.zeros(param.size())
 
             optimizer_G.step()
             if rank == 0 and not choose_r0:
@@ -461,7 +461,7 @@ def run(rank, size):
 
             if rank == 0 and not choose_r0:
                 for param in discriminator.parameters():
-                    param.grad.data = torch.zeros(param.size()).cuda()
+                    param.grad.data = torch.zeros(param.size()).cuda() if cuda else torch.zeros(param.size())
             optimizer_D.step()
 
             #Print stats and generate images only if this is the server
@@ -514,7 +514,7 @@ parser.add_argument("--fid_batch", type=int, default=4000, help="number of sampl
 parser.add_argument("--rank", type=int, default=-1, help="Rank of this node in the distributed setup.")
 parser.add_argument("--size", type=int, default=-1, help="Total number of machines in this experiment.")
 parser.add_argument("--iid", type=int, default=0, help="Determines whether data should be distributed in an iid fashion to all workers or not. Takes only 0 or 1 as a value.")
-parser.add_argument("--weight_avg", type=int, default=0, help="If set, vanilla FL-GAN operates. Otherwise, the new weighted averaging with entropies scheme takes place.")
+parser.add_argument("--weight_avg", type=int, default=0, help="If set, the new weighted averaging with entropies scheme takes place.")
 parser.add_argument("--sample", type=int, default=0, help="If set, smart sampling takes place. Otherwise, random sampling is used.")
 parser.add_argument("--port", type=str, default='29500', help="Port number of the master....required for connections from everybody.")
 parser.add_argument("--master", type=str, default='igrida-abacus9', help="The master hostname...should be known by everybody.")

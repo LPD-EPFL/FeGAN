@@ -32,6 +32,7 @@
  # Link: https://arxiv.org/abs/1811.03850
  # The original paper did not publish an open-source code. This is our implementation, which is done primarily for comparison.
 ###
+#!/usr/bin/env python3
 import argparse
 import os
 import numpy as np
@@ -137,7 +138,7 @@ class Discriminator(nn.Module):
 def average_models(model, group=None, choose_r0=True, weights=None, elapsed_time=None):
     for param in model.parameters():
         if rank == 0:				#If rank=0 is not in included in this round, put zeros instead
-            param.data = torch.zeros(param.size()).cuda()
+            param.data = torch.zeros(param.size()).cuda() if cuda else torch.zeros(param.size())
         dist.reduce(param.data, dst=0, op=dist.ReduceOp.SUM)
         param.data /= (size - 1)
 
@@ -157,7 +158,6 @@ def init_groups(size):
 	The server initializes the group and send it to all workers so that everybody can agree on the working group at some round.
 	Args
 		size		The total number of machines in the current setup
-		cls_freq_wrk	The frequency of samples of each class at each worker. This is used when the "sample" option is chosen. Otherwise, random sampling is applied and this parameter is not used. 
     """
     global all_groups
     all_groups = []
@@ -222,7 +222,7 @@ def run(rank, size):
             shuffle=True,
         )
     else:
-        manager = DatasetManager(opt.model, opt.batch_size, opt.img_size, size-1, size, rank, opt.iid)
+        manager = DatasetManager(opt.model, opt.batch_size, opt.img_size, size-1, size, rank, opt.iid, 1)
         train_set, _ = manager.get_train_set(opt.magic_num)
 
     # Optimizers
@@ -238,7 +238,7 @@ def run(rank, size):
             fic_model = fic_model.cuda()
         test_set = manager.get_test_set()
         for i,t in enumerate(test_set):
-            test_imgs = t[0].cuda()
+            test_imgs = t[0].cuda() if cuda else t[0]
             test_labels = t[1]
 
     # ----------
@@ -294,8 +294,9 @@ def run(rank, size):
             X_d = torch.zeros(temp.size())
             dist.broadcast(tensor=X_g, src=0, group=all_groups[rank-1])
             dist.broadcast(tensor=X_d, src=0, group=all_groups[rank-1])
-            X_g = X_g.cuda()
-            X_d = X_d.cuda()
+            if cuda:
+                X_g = X_g.cuda()
+                X_d = X_d.cuda()
 
             # Loss measures generator's ability to fool the discriminator
         if rank == 0:
@@ -381,8 +382,6 @@ parser.add_argument("--fid_batch", type=int, default=4000, help="number of sampl
 parser.add_argument("--rank", type=int, default=-1, help="Rank of this node in the distributed setup.")
 parser.add_argument("--size", type=int, default=-1, help="Total number of machines in this experiment.")
 parser.add_argument("--iid", type=int, default=1, help="Determines whether data should be distributed in an iid fashion to all workers or not. Takes only 0 or 1 as a value.")
-parser.add_argument("--weight_avg", type=int, default=0, help="If set, vanilla FL-GAN operates. Otherwise, the new weighted averaging with entropies scheme takes place.")
-parser.add_argument("--sample", type=int, default=0, help="If set, smart sampling takes place. Otherwise, random sampling is used.")
 parser.add_argument("--port", type=str, default='29500', help="Port number of the master....required for connections from everybody.")
 parser.add_argument("--master", type=str, default='igrida-abacus9', help="The master hostname...should be known by everybody.")
 #parser.add_argument("--bench", type=int, default=1, help="If set, time taken by each step is printed.")

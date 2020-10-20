@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import os
 import numpy as np
@@ -120,11 +121,11 @@ discriminator.apply(weights_init_normal)
 
 # Configure data loader
 homedir = str(pathlib.Path.home())
-os.makedirs(homedir+"/FL-GAN/data/"+opt.model, exist_ok=True)
+os.makedirs(homedir+"/FeGAN/data/"+opt.model, exist_ok=True)
 if opt.model == 'mnist':
     dataloader = torch.utils.data.DataLoader(
     datasets.MNIST(
-        homedir+"/FL-GAN/data/mnist",
+        homedir+"/FeGAN/data/mnist",
         train=True,
         download=True,
         transform=transforms.Compose(
@@ -137,7 +138,7 @@ if opt.model == 'mnist':
 else:
     dataloader = torch.utils.data.DataLoader(
          datasets.FashionMNIST(
-              homedir+'/FL-GAN/data/fashion-mnist',
+              homedir+'/FeGAN/data/fashion-mnist',
               train=True,
               download=True,
               transform=transforms.Compose([transforms.Resize(opt.img_size),
@@ -150,7 +151,7 @@ else:
 if opt.model == 'mnist':
     test_set = torch.utils.data.DataLoader(
         datasets.MNIST(
-        homedir+"/FL-GAN/data/mnist",
+        homedir+"/FeGAN/data/mnist",
         train=False,
         download=False,
         transform=transforms.Compose(
@@ -163,7 +164,7 @@ if opt.model == 'mnist':
 else:
     test_set = torch.utils.data.DataLoader(
          datasets.FashionMNIST(
-              homedir+'/FL-GAN/data/fashion-mnist',
+              homedir+'/FeGAN/data/fashion-mnist',
               train=False,
               download=False,
               transform=transforms.Compose([transforms.Resize(opt.img_size),
@@ -178,7 +179,7 @@ fic_model = InceptionV3()
 if cuda:
     fic_model = fic_model.cuda()
 for i,t in enumerate(test_set):
-    test_imgs = t[0].cuda()
+    test_imgs = t[0].cuda() if cuda else t[0]
 
 # Optimizers
 optimizer_G = torch.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))

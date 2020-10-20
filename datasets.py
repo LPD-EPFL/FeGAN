@@ -132,7 +132,7 @@ class DatasetManager(object):
         homedir = str(pathlib.Path.home())
         if dataset == MNIST:
             return datasets.MNIST(
-              homedir+'/FL-GAN/data/mnist',
+              homedir+'/FeGAN/data/mnist',
               train=train,
               download=train,
               transform=transforms.Compose([transforms.Resize(self.img_size),
@@ -142,7 +142,7 @@ class DatasetManager(object):
 
         elif dataset == FASHION_MNIST:
             return datasets.FashionMNIST(
-              homedir+'/FL-GAN/data/fashion-mnist',
+              homedir+'/FeGAN/data/fashion-mnist',
               train=train,
               download=train,
               transform=transforms.Compose([transforms.Resize(self.img_size),
@@ -151,7 +151,7 @@ class DatasetManager(object):
             ]))
         elif dataset == CELEBA:
             return datasets.ImageFolder(
-              root=homedir+'/FL-GAN/data/celeba',
+              root=homedir+'/FeGAN/data/celeba',
               transform=transforms.Compose([
                   transforms.Resize(self.img_size),
                   transforms.CenterCrop(self.img_size),
@@ -160,7 +160,7 @@ class DatasetManager(object):
                   ]))
         elif dataset == IMAGENET:
             return datasets.ImageFolder(
-              root=homedir+'/FL-GAN/data/imagenet/tiny-imagenet-200/train',
+              root=homedir+'/FeGAN/data/tiny-imagenet-200/train',
               transform=transforms.Compose([
                   transforms.Resize(self.img_size),
                   transforms.CenterCrop(self.img_size),
@@ -175,7 +175,7 @@ class DatasetManager(object):
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
               return datasets.CIFAR10(
-               homedir+'/FL-GAN/data/cifar10',
+               homedir+'/FeGAN/data/cifar10',
                train=True,
                download=True,
                transform=transforms_train)
@@ -184,7 +184,7 @@ class DatasetManager(object):
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
               return datasets.CIFAR10(
-                homedir+'/FL-GAN/data/cifar10',
+                homedir+'/FeGAN/data/cifar10',
                 train=False,
                 download=False,
                 transform=transforms_test)
@@ -208,7 +208,7 @@ class DatasetManager(object):
             num_cls = NUM_CLASSES if num_cls > NUM_CLASSES else num_cls	#limit number of classes with each worker
             print("At worker {}, number of classes is {}".format(self.rank, num_cls))
             g = random.sample(range(0, NUM_CLASSES), num_cls)	#This variable determines which classes are they
-            assert len(g) > 0
+            assert len(g) > 0, "revise the value given to num_cls variable"
             cls_count = [0 for _ in range(NUM_CLASSES)]		#This counts how many sample of each class has this client chosen so far
             print("At worker {}, number of classes is {}".format(self.rank, num_cls))
             #limiting number of samples per class gives weighting a better environment for beating the vanilla setup
@@ -216,7 +216,7 @@ class DatasetManager(object):
             #limiting number of samples per class.....otherwise, it is not truly an FL setup
             for i in range(NUM_CLASSES):
                 cls_max[i] = (self.rank+1)*magic_num/(size+1) if cls_max[i] > magic_num else cls_max[i]
-            assert len(g) != 0
+            assert len(g) != 0, "Please consider changing this magic number to resolve the assertion error"
             for i,t in enumerate(train_set):
                 img, label = t
                 if label in g and cls_count[label] < cls_max[label] and label <= NUM_CLASSES:

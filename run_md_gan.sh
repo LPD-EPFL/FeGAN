@@ -16,9 +16,11 @@ num_gpus=$(((num_machines-1)*2+1))
 echo "Total number of GPUs for workers in this deployment: $num_gpus"
 node_per_gpu=$((n/num_gpus))
 echo "Number of nodes per GPU $node_per_gpu"
-if [ $((n%node_per_gpu)) != 0 ]
+if [ $((n%node_per_gpu)) != 0 ] || [[ $node_per_gpu -eq 1 && $n != $node_per_gpu ]]
 then
-	echo "WARNING: Choose a value of n that is divisible by $node_per_gpu in this setup; the current value for n is $n"
+	echo "ERROR: Choose a value of n that is divisible by $node_per_gpu in this setup; the current value for n is $n"
+        echo "This run file is only to help deploy FeGAN; feel free to write your own run file with whatever parameters you like"
+        exit
 fi
 if [ $node_per_gpu -gt 16 ]
 then

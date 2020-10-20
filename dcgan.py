@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from __future__ import print_function
 import argparse
 import os
@@ -31,7 +32,7 @@ torch.manual_seed(manualSeed)
 
 # Root directory for dataset
 if opt.model == 'imagenet':
-    dataroot = "data/imagenet/tiny-imagenet-200/train"
+    dataroot = "data/tiny-imagenet-200/train"
 elif opt.model == 'celeba':
     dataroot = "data/celeba"
 # Number of workers for dataloader
@@ -187,9 +188,12 @@ real_label = 1
 fake_label = 0
 
 fic_model = InceptionV3()
-fic_model = fic_model.cuda()
+if cuda:
+    fic_model = fic_model.cuda()
 for i,t in enumerate(test_set):
-    test_imgs = t[0].cuda()
+    test_imgs = t[0]
+    if cuda:
+        test_imgs = test_imgs.cuda()
     break
 
 # Setup Adam optimizers for both G and D
@@ -219,7 +223,7 @@ for epoch in range(num_epochs):
         # Format batch
         real_cpu = data[0].to(device)
         b_size = real_cpu.size(0)
-        label = torch.full((b_size,), real_label, device=device)
+        label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
         # Forward pass real batch through D
         output = netD(real_cpu).view(-1)
         # Calculate loss on all-real batch

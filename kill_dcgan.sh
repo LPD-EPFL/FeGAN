@@ -1,3 +1,4 @@
+#!/bin/bash
 nodes=$1
 echo "Killing nodes in file $nodes"
 pwd=`pwd`
