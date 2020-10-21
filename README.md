@@ -132,7 +132,7 @@ optional arguments:
 
 * Examples: 
 
-a) `python3 lsgan.py --n_epcosh 200 --batch_size 50 --fid_batch 10000 --model mnist`
+a) `python3 lsgan.py --n_epochs 200 --batch_size 50 --fid_batch 100 --model mnist`
 
 b) `python3 dcgan.py --model imagenet`
 

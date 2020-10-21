@@ -225,6 +225,7 @@ def run(rank, size):
         manager = DatasetManager(opt.model, opt.batch_size, opt.img_size, size-1, size, rank, opt.iid, 1)
         train_set, _ = manager.get_train_set(opt.magic_num)
 
+    init_groups(size)
     # Optimizers
     optimizer_G = torch.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
     optimizer_D = torch.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))

@@ -1,4 +1,4 @@
-This is the directory in whcih any dataset should be put.
+This is the directory in which any dataset should be put.
 
 MNIST and CIFAR10 datasets are instaled directly by the scripts.
 
