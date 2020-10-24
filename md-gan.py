@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 ###
  # @file   md-gan.py
@@ -32,7 +33,6 @@
  # Link: https://arxiv.org/abs/1811.03850
  # The original paper did not publish an open-source code. This is our implementation, which is done primarily for comparison.
 ###
-#!/usr/bin/env python3
 import argparse
 import os
 import numpy as np
@@ -369,12 +369,12 @@ parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs 
 parser.add_argument("--batch_size", type=int, default=50, help="size of the batches (named B in FL notations)")
 parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
-parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
+parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of second order momentum of gradient")
 parser.add_argument("--n_cpu", type=int, default=8, help="number of cpu threads to use during batch generation")
 parser.add_argument("--latent_dim", type=int, default=100, help="dimensionality of the latent space")
 parser.add_argument("--img_size", type=int, default=32, help="size of each image dimension")
 parser.add_argument("--channels", type=int, default=1, help="number of image channels")
-parser.add_argument("--sample_interval", type=int, default=1000, help="number of iterations to calculate the FID.")
+parser.add_argument("--sample_interval", type=int, default=1000, help="calculate the FID every SAMPLE_INTERVAL iterations")
 #DIST
 parser.add_argument("--model", type=str, default='mnist', help="model to train")
 parser.add_argument("--local_steps", type=int, default=100, help="number of local steps to be executed in each worker before sending to the server (named E in FL notations).")

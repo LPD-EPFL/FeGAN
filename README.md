@@ -18,10 +18,10 @@ FeGAN was tested with the following versions
 The following steps should be applied for **ALL** machines that are going to contribute to the running of FeGAN.
 
 1. Follow [PyTorch installation guide](https://pytorch.org/) (depending on your environment and preferences). Here are couple of examples:
- * If you want to use conda, download the installer from [here](https://www.anaconda.com/products/individual) and then run `sh Anaconda_$VERSION_NO.sh; conda install python=3.7`. Then, install Pytorch by running: `conda install pytorch torchvision cudatoolkit=10.2 -c pytorch` (assuming using the same tested environment). Note that, for this, you need to add conda path to `PATH` environment variable as follows `export PATH=$HOME/anaconda3/bin:$PATH` then run `source activate base`. **For the distributed setup, you will need to add this latter export line in `.bashrc` file in `$HOME` directory.**
+ * If you want to use conda, download the installer from [here](https://www.anaconda.com/products/individual) and then run `sh Anaconda_$VERSION_NO.sh; conda install python=3.6.10`. Then, install Pytorch by running: `conda install pytorch torchvision cudatoolkit=10.2 -c pytorch` (assuming using the same tested environment). Note that, for this, you need to add conda path to `PATH` environment variable as follows `export PATH=$HOME/anaconda3/bin:$PATH` then run `source activate base`. **For the distributed setup, you will need to add this latter export line in `.bashrc` file in `$HOME` directory.**
  * If you want to use pip, run `pip install torch torchvision`.
 
-2. Install the other required packages. For instance, if you are using pip, run `pip install numpy==1.19.1 scipy==1.5.2`
+2. Install the other required packages by running `pip install numpy==1.19.1 scipy==1.5.2` (this command works also for `conda` users).
 ## Distributed deployment (FeGAN-based)
 * `dist-lsgan.py` (or `dist-dcgan.py`) *To run the distributed LSGAN (or DCGAN) on multiple machines
 
@@ -39,14 +39,14 @@ optional arguments:
                         size of the batches (named B in FL notations)
   --lr LR               adam: learning rate
   --b1 B1               adam: decay of first order momentum of gradient
-  --b2 B2               adam: decay of first order momentum of gradient
+  --b2 B2               adam: decay of second order momentum of gradient
   --n_cpu N_CPU         number of cpu threads to use during batch generation
   --latent_dim LATENT_DIM
                         dimensionality of the latent space
   --img_size IMG_SIZE   size of each image dimension
   --channels CHANNELS   number of image channels
   --sample_interval SAMPLE_INTERVAL
-                        number of iterations to calculate the FID
+                        calculate the FID every SAMPLE_INTERVAL iterations
   --model MODEL         dataset to be used. For LSGAN, we support mnist and fashion-mnist
   --local_steps LOCAL_STEPS
                         number of local steps to be executed in each worker before sending to the server (named E in FL notations)
@@ -112,14 +112,14 @@ optional arguments:
                         size of the batches
   --lr LR               adam: learning rate
   --b1 B1               adam: decay of first order momentum of gradient
-  --b2 B2               adam: decay of first order momentum of gradient
+  --b2 B2               adam: decay of second order momentum of gradient
   --n_cpu N_CPU         number of cpu threads to use during batch generation
   --latent_dim LATENT_DIM
                         dimensionality of the latent space
   --img_size IMG_SIZE   size of each image dimension
   --channels CHANNELS   number of image channels
   --sample_interval SAMPLE_INTERVAL
-                        number of image channels
+                        calculate the FID every SAMPLE_INTERVAL iterations
   --fid_batch FID_BATCH
                         number of samples used to evaluate the progress of the
                         GAN (using the FID score)
@@ -155,14 +155,14 @@ optional arguments:
                         size of the batches (named B in FL notations)
   --lr LR               adam: learning rate
   --b1 B1               adam: decay of first order momentum of gradient
-  --b2 B2               adam: decay of first order momentum of gradient
+  --b2 B2               adam: decay of second order momentum of gradient
   --n_cpu N_CPU         number of cpu threads to use during batch generation
   --latent_dim LATENT_DIM
                         dimensionality of the latent space
   --img_size IMG_SIZE   size of each image dimension
   --channels CHANNELS   number of image channels
   --sample_interval SAMPLE_INTERVAL
-                        number of iterations to calculate the FID
+                        calculate the FID every SAMPLE_INTERVAL iterations
   --model MODEL         dataset to be used (e.g., mnist, fashion-mnist, ..etc.)
   --fid_batch FID_BATCH
                         number of samples used to evaluate the progress of the
