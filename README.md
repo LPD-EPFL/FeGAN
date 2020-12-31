@@ -1,3 +1,5 @@
+<img align="right" width="33%" height="33%" src="acm_badges.png">
+
 # FeGAN
 
 Authors: Arsany Guirguis
